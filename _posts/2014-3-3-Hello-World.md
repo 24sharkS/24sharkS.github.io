@@ -3,7 +3,9 @@ layout: post
 title: You're up and running!
 published: true
 ---
-
+---
+title: Creating First Blog
+---
 ##
 
 Hi! I am a sophomore student at IIIT Delhi studying B.Tech in CSB.
