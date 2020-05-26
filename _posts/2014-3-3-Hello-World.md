@@ -1,18 +1,12 @@
 ---
 layout: post
-title: You're up and running!
+title: Writing First Blog
 published: true
 ---
----
-title: Creating First Blog
----
-##
 
-Hi! I am a sophomore student at IIIT Delhi studying B.Tech in CSB.
+##Hi! I am a sophomore student at IIIT Delhi studying B.Tech in CSB.
 
-###
-
-This is a demo blog for GSOC 2020.
+###This is a demo blog for GSOC 2020.
 
 
 My project for GSOC 2020 involves writing a wrapper R package for the pyopenms package which exposes the functions of C++ library OpenMS.
