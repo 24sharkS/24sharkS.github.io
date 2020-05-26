@@ -13,6 +13,6 @@ My project for GSOC 2020 involves writing a wrapper R package for the pyopenms p
 
 
 
-**** The project timeline is divided into 3 phases with each one spanning roughly over a month.
+****The project timeline is divided into 3 phases with each one spanning roughly over a month.
 
 The current goals and todos list can be found [here](https://github.com/OpenMS/OpenMS/projects/31).
