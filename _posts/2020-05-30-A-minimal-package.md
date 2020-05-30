@@ -14,12 +14,12 @@ A limited number of pyopenms classes, with selective functions, have been wrappe
 ### The package is hosted [here](https://github.com/24sharkS/ropenms).
 
 ## Note on Installation
-Reticulate will automatically configure a python environment for the user when this package is loaded. If the user has no compatible version of python, they will be prompted to install Miniconda. The python dependency(pyopenms in this case) listed in Config/reticulate will be installed in an appropriate conda environment. The user can explicity instruct reticulate to use specific python environment having pyopenms installed by setting RETICULATE_PYTHON environment variable to a python binary, i.e. using ```Sys.setenv(RETICULATE_PYTHON = PATH)```.
+Reticulate will automatically configure a python environment for the user when this package is loaded. If the user has no compatible version of python, they will be prompted to install Miniconda. The python dependency(pyopenms in this case) listed in Config/reticulate inside DESCRIPTION will be installed in an appropriate conda environment. The user can explicity instruct reticulate to use specific python environment having pyopenms installed by setting RETICULATE_PYTHON environment variable to a python binary, i.e. using ```Sys.setenv(RETICULATE_PYTHON = PATH)```.
 
 ### Class Structure
 ![]({{ site.baseurl }}/images/class_structure.JPG)
 
-The private section contains  **py_obj** which has its value set at the time of object creation in **initialize**. ```get_python_obj()``` is a function which returns the pyopenms module object, which is used to set **py_obj** as the underlying pyopenms class object. All functions use **py_obj** to call the python object.
+The private section contains  **py_obj** which has its value set at the time of object creation in **initialize**. ```get_python_obj()``` function returns the pyopenms module object, which is used to set **py_obj** as the underlying pyopenms class object. All the functions use **py_obj** to call the respective python function.
 
 ### Currently the included classes are:
 1. **MzMLFile**,**FeatureXMLFile**,**IdXMLFile** which have **load() and store()** functions
@@ -41,18 +41,18 @@ Using **getSpectra()** of python object, we get a list of MSSpectrum python obje
 
 Here, we use **get_py_obj** to access the underlying python object.
 
-The one drawback to using these functions is that it will weaken the abstraction as user can handle the underlying python object.
+One drawback of using these functions is that it will weaken the encapsulation as users can access the underlying python object.
  
 ## Type Conversion.
 Reticulate converts the R data types into equivalent python types when passed to a function. Similarly, when values are returned from Python to R they are converted back to R types.
 
-We don't need to convert the values returned from a function. But, we need to perform explicit to and fro conversion in case where the passed argument is modified.
+We don't need to convert the values returned from a function. But, we need to perform to and fro conversion explicitly in case where the argument passed to a function is modified.
 
 **_For example, consider the implementation of ```load()``` function of IdXMLFile._**
 
 ![load.JPG]({{site.baseurl}}/images/load.JPG)
 
-Here, if **protein_ids** and **peptide_ids** lists are passed directly, then the problem is that reticulate first converts these to python lists and then passes these new objects to the function. Thus, only the converted python lists will get modified. We need to save the reference to the converted python list, in order to reflect back the changes in the R list.
+Here, if **protein_ids** and **peptide_ids** lists are passed directly, then the problem is that reticulate first converts these to equivalent python lists and then passes these new objects to the function. Thus, only the converted python lists will get modified. We need to save the reference to the converted python list, in order to reflect back changes in the R list.
 
 For setting or extracting peaks, we don't need to do explicit conversion. The python tuple of two numpy arrays gets converted to an R list with two arrays and vice versa.
 
@@ -60,7 +60,7 @@ For setting or extracting peaks, we don't need to do explicit conversion. The py
 
 Here, using the wrapped python object we call the respective functions passing the arguments directly.
 
-For functions using integer parameter, we need to explicitly coerce the argument to integer as otherwise reticulate will convert it as float since by default, the internal type of any integral value in R is double unless specified by "L".
+For functions using integer parameter, we need to explicitly coerce the argument to integer as otherwise reticulate will convert it to float in python since by default, the internal data type of any integer in R is double unless declared using "L" suffix.
 
 ![coercion.JPG]({{site.baseurl}}/images/coercion.JPG)
 
