@@ -3,10 +3,17 @@ published: false
 ---
 ## Testing automated conversion in reticulate and wrapper classes using R6Class. 
 
+
 This blog features an attempt to try out the automated conversion of python to r data types and vice versa (enabled by convert = TRUE when importing pyopenms module). I have created R6 classes to wrap the corresponding pyopenms class object. The private section of this class contains the python object and the public section has wrapper functions for pyopenms class which make use of the python object.
 The motivation for adopting this approach was for abstraction of type conversion details and restrict the user from handling the underlying python object as much as possible.
 
 A limited number of pyopenms classes, with selective functions, have been wrapped to demonstrate a few common use cases like file input/output, getting spectra list of an experiment and setting or extracting the peaks (m/z and Intensity values) for a spectrum.
+
+### The package is hosted [https://github.com/24sharkS/ropenms](here).
+
+## Note on Installation
+Reticulate will automatically configure a python environment for the user when this package is loaded.
+If the user has no compatible version of python, they will be prompted to install Miniconda. The python dependency(pyopenms in this case) listed in Config/reticulate will be installed in an appropriate conda environment. The user can explicity instruct reticulate to use specific python environment having pyopenms installed by setting RETICULATE_PYTHON environment variable to a python binary, i.e. using ```Sys.setenv(RETICULATE_PYTHON = PATH)```.
 
 ### Class Structure
 ![class_structure.JPG]({{site.baseurl}}/_posts/class_structure.JPG)
@@ -23,13 +30,14 @@ Currently the included classes are:
 Apart from the wrapper functions, setter and getter methods (```set_py_obj() & get_py_obj()```) are also present in some classes to handle the underlying python object. 
 For example, consider the **getSpectra()** and **setSpectra()** functions of class **MSExperiment**.
 ![set_py_obj.JPG]({{site.baseurl}}/_posts/set_py_obj.JPG)
-Using getSpectra() of python object, we get a list of MSSpectrum python objects. For each python object we create an MSSpectrum object and update its wrapped object using MSSpectrum
+Using **getSpectra()** of python object, we get a list of MSSpectrum python objects. Then for each python object, we create an MSSpectrum object and update its underlying python class object using **set_py_obj**.
 
+![get_py_obj.JPG]({{site.baseurl}}/_posts/get_py_obj.JPG)
+Here, we use **get_py_obj** to access the underlying python object.
 
-This is one of the drawbacks as it weakens the abstraction.
+This is one of the drawbacks as it weakens the abstraction because the user can now access the underlying python object.
 
  
-
 ## Type Conversion.
 Reticulate converts the R data types into equivalent python types when passed to a function. Similarly, when values are returned from Python to R they are converted back to R types.
 
@@ -46,7 +54,80 @@ Here, using the wrapped python object we call the respective functions passing t
 For functions using integer parameter, we need to explicitly coerce the argument to integer as otherwise reticulate will convert it as float since by default, the internal type of any integral value in R is double unless specified by "L".
 ![coercion.JPG]({{site.baseurl}}/_posts/coercion.JPG)
 
+## Some code snippets used to test functionality. (based on [ropenms Script](https://github.com/OpenMS/OpenMS/blob/develop/share/OpenMS/SCRIPTS/ropenms.R))
 
+### load and parse idXML file.
+```
+download.file("https://raw.githubusercontent.com/OpenMS/OpenMS/develop/share/OpenMS/examples/BSA/BSA2_OMSSA.idXML","bs.idXML")
 
+idXML <- IdXMLFile$new()
 
+peptids <- list()
 
+protids <- list()
+
+idXML$load("bs.idXML",protids,peptids)
+
+pephits=peptids[[5]]$getHits()
+pephits[[1]]$getSequence()
+```
+
+### load and parse featureXML file.
+```
+download.file("https://raw.githubusercontent.com/OpenMS/OpenMS/develop/share/OpenMS/examples/FRACTIONS/BSA1_F1.featureXML","f.featureXML")
+
+featXML <- FeatureXMLFile$new()
+fmap <- FeatureMap$new()
+featXML$load("f.featureXML",fmap)
+
+# Accessing feature properties.
+# As UniqueId is non-32 bit integer, so the conversion fails and getUniqueId() gives -1 as output.
+print(paste("FeatureID:", fmap$getFeature(3)$getUniqueId()))
+print(paste("FeatureID:", fmap$getFeature(3)$getMZ()))
+```
+
+### load and parse mzML file.
+```
+download.file("https://raw.githubusercontent.com/OpenMS/OpenMS/develop/share/OpenMS/examples/BSA/BSA1.mzML","t.mzML")
+
+mzML <- MzMLFile$new()
+msexp <- MSExperiment$new()
+
+mzML$load("t.mzML",msexp)
+
+# Accessing spectra from MSExperiment object.
+spectra <- msexp$getSpectra()
+
+head(spectra, 2)
+```
+![mzML.JPG]({{site.baseurl}}/_posts/mzML.JPG)
+
+### Accessing peaks for a spectrum.
+```
+spectrum <- MSSpectrum$new()
+
+m <- seq(1000,500,-100)
+intensity <- seq(50,200, length.out = length(mz))
+
+spectrum$set_peaks(list(mz,intensity))
+
+## Access peak with get_peaks()
+do.call("cbind", spectrum$get_peaks())
+```
+
+### Filtering ms1 spectrums and generating peak map from a spectra list. 
+```
+ms1=sapply(spectra, function(x) x$getMSLevel()==1)
+peaks=sapply(spectra[ms1], function(x) cbind(do.call("cbind", x$get_peaks()),x$getRT()))
+peaks=do.call("rbind", peaks)
+peaks_df=data.frame(peaks)
+colnames(peaks_df)=c('MZ','Intensity','RT')
+peaks_df$Intensity=log10(peaks_df$Intensity)
+ggplot(peaks_df, aes(x=MZ, y=RT) )+geom_point(size=1, aes(colour = Intensity), alpha=0.25) + theme_minimal() + scale_colour_gradient(low = "blue", high = "yellow")
+```
+
+## Limitations to discuss.
+- The user can still access the underlying pyopenms object. So, there is not a full abstraction. To see if the handling of this object should be allowed or not.
+- This approach of creating wrapper R6 classes may not be very easy to automate and lead to memory intensive package.
+- Although using automated conversion may eliminate explicit type conversion to a good extent, it is required when objects passed as arguments get modified.
+- Many classes in pyopenms support iteration. Creating a wrapper method to iterate using the pyopenms object might be a possible solution.
