@@ -38,10 +38,10 @@ Apart from the wrapper functions, setter and getter methods (```set_py_obj() & g
 Using **getSpectra()** of python object, we get a list of MSSpectrum python objects. Then for each python object, we create an MSSpectrum object and update its underlying python class object using **set_py_obj**.
 
 ![get_py_obj.JPG]({{ site.baseurl }}/images/get_py_obj.JPG)
+
 Here, we use **get_py_obj** to access the underlying python object.
 
-This is one of the drawbacks as it weakens the abstraction because the user can now access the underlying python object.
-
+The one drawback to using these functions is that it will weaken the abstraction as user can handle the underlying python object.
  
 ## Type Conversion.
 Reticulate converts the R data types into equivalent python types when passed to a function. Similarly, when values are returned from Python to R they are converted back to R types.
