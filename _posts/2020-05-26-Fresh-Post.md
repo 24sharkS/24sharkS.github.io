@@ -1,7 +1,4 @@
 ---
-published: true
----
----
 layout: post
 title: This is the 2nd blog.
 published: true
