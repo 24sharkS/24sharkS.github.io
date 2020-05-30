@@ -24,17 +24,17 @@ The private section contains  **py_obj** which has its value set at the time of 
 
 Currently the included classes are:
 1. **MzMLFile**,**FeatureXMLFile**,**IdXMLFile** which have **load() and store()** functions.
-2. **MSExperiment** with functions -> **getMSLevels(),getNrSpectra(),getSpectra(),getSpectrum(),setSpectra() and size()**.
-3. **MSSpectrum** with functions -> **getMSLevel(),setMSLevel(),getRT(),setRT(),get_peaks(),size() and set_peaks()**.
+2. **MSExperiment** with functions **getMSLevels(),getNrSpectra(),getSpectra(),getSpectrum(),setSpectra() and size()**.
+3. **MSSpectrum** with functions **getMSLevel(),setMSLevel(),getRT(),setRT(),get_peaks(),size() and set_peaks()**.
 4. **FeatureMap** with function **getFeature()** to access specific feature by index. As FeatureMap is one of the many classes which support iteration, this function was made taking the fact into account.
 5. **Feature** with **getUniqueId() and getMZ()**.
 
 Apart from the wrapper functions, setter and getter methods (```set_py_obj() & get_py_obj()```) are also present in some classes to handle the underlying python object. 
 For example, consider the **getSpectra()** and **setSpectra()** functions of class **MSExperiment**.
-![set_py_obj.JPG]({{site.baseurl}}/_posts/set_py_obj.JPG)
+![set_py_obj.JPG]({{site.baseurl}}/images/set_py_obj.JPG)
 Using **getSpectra()** of python object, we get a list of MSSpectrum python objects. Then for each python object, we create an MSSpectrum object and update its underlying python class object using **set_py_obj**.
 
-![get_py_obj.JPG]({{ site.baseurl }}/_posts/get_py_obj.JPG)
+![get_py_obj.JPG]({{ site.baseurl }}/images/get_py_obj.JPG)
 Here, we use **get_py_obj** to access the underlying python object.
 
 This is one of the drawbacks as it weakens the abstraction because the user can now access the underlying python object.
@@ -45,18 +45,18 @@ Reticulate converts the R data types into equivalent python types when passed to
 
 We don't need to convert the values returned from a function. But, we need to perform explicit to and fro conversion in case where the passed argument is modified. For example, consider the implementation of function ```load()``` of IdXMLFile.
 
-![load.JPG]({{site.baseurl}}/_posts/load.JPG)
+![load.JPG]({{site.baseurl}}/images/load.JPG)
 
 Here, if **protein_ids** and **peptide_ids** lists are passed directly, then the problem is that reticulate first converts these to python lists and then passes these new objects to the function. Thus, only the converted python lists will get modified. We need to save the reference to the converted python list, in order to reflect back the changes in the R list.
 
 For setting or extracting peaks, we don't need to do explicit conversion. The python tuple of two numpy arrays get converted to an R list with two arrays and vice versa.
 
-![peaks.JPG]({{site.baseurl}}/_posts/peaks.JPG)
+![peaks.JPG]({{site.baseurl}}/images/peaks.JPG)
 
 Here, using the wrapped python object we call the respective functions passing the arguments directly.
 
 For functions using integer parameter, we need to explicitly coerce the argument to integer as otherwise reticulate will convert it as float since by default, the internal type of any integral value in R is double unless specified by "L".
-![coercion.JPG]({{site.baseurl}}/_posts/coercion.JPG)
+![coercion.JPG]({{site.baseurl}}/images/coercion.JPG)
 
 ## Some code snippets used to test functionality. (based on [ropenms Script](https://github.com/OpenMS/OpenMS/blob/develop/share/OpenMS/SCRIPTS/ropenms.R))
 
@@ -134,4 +134,4 @@ ggplot(peaks_df, aes(x=MZ, y=RT) )+geom_point(size=1, aes(colour = Intensity), a
 - The user can still access the underlying pyopenms object. So, there is not a full abstraction. To see if the handling of this object should be allowed or not.
 - This approach of creating wrapper R6 classes may not be very easy to automate and lead to memory intensive package.
 - Although using automated conversion may eliminate explicit type conversion to a good extent, it is required when objects passed as arguments get modified.
-- Many classes in pyopenms support iteration. Creating a wrapper method to iterate using the pyopenms object might be a possible solution.
+- Many classes in pyopenms support iteration. Creating a wrapper method to iterate on the pyopenms object might be a possible solution.
