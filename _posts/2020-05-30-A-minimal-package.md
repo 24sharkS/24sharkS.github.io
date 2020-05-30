@@ -18,7 +18,7 @@ Reticulate will automatically configure a python environment for the user when t
 If the user has no compatible version of python, they will be prompted to install Miniconda. The python dependency(pyopenms in this case) listed in Config/reticulate will be installed in an appropriate conda environment. The user can explicity instruct reticulate to use specific python environment having pyopenms installed by setting RETICULATE_PYTHON environment variable to a python binary, i.e. using ```Sys.setenv(RETICULATE_PYTHON = PATH)```.
 
 ### Class Structure
-![class_structure.JPG]({{site.baseurl}}/_posts/class_structure.JPG)
+![_config.yml]({{site.baseurl}}/_posts/class_structure.JPG)
 
 The private section contains  **py_obj** which has its value set at the time of object creation in **initialize**. ```get_python_obj()``` is a function which returns the pyopenms module object, which is used to set **py_obj** as the underlying pyopenms class object. All functions use **py_obj** to call the python object.
 
