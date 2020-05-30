@@ -46,8 +46,9 @@ The one drawback to using these functions is that it will weaken the abstraction
 ## Type Conversion.
 Reticulate converts the R data types into equivalent python types when passed to a function. Similarly, when values are returned from Python to R they are converted back to R types.
 
-We don't need to convert the values returned from a function. But, we need to perform explicit to and fro conversion in case where the passed argument is modified. 
-**_For example, consider the implementation of function ```load()``` of IdXMLFile._**
+We don't need to convert the values returned from a function. But, we need to perform explicit to and fro conversion in case where the passed argument is modified.
+
+**_For example, consider the implementation of ```load()``` function of IdXMLFile._**
 
 ![load.JPG]({{site.baseurl}}/images/load.JPG)
 
