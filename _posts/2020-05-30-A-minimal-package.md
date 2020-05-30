@@ -22,11 +22,11 @@ Reticulate will automatically configure a python environment for the user when t
 The private section contains  **py_obj** which has its value set at the time of object creation in **initialize**. ```get_python_obj()``` is a function which returns the pyopenms module object, which is used to set **py_obj** as the underlying pyopenms class object. All functions use **py_obj** to call the python object.
 
 ### Currently the included classes are:
-1. **MzMLFile**,**FeatureXMLFile**,**IdXMLFile** which have **load() and store()** functions.
-2. **MSExperiment** with functions **getMSLevels()**,**getNrSpectra()**,**getSpectra()**,**getSpectrum()**,**setSpectra()** and **size()**.
-3. **MSSpectrum** with functions **getMSLevel()**,**setMSLevel()**,**getRT()**,**setRT()**,**get_peaks()**,**size()** and **set_peaks()**.
+1. **MzMLFile**,**FeatureXMLFile**,**IdXMLFile** which have **load() and store()** functions
+2. **MSExperiment** with functions **getMSLevels()**,**getNrSpectra()**,**getSpectra()**,**getSpectrum()**,**setSpectra()** and **size()**
+3. **MSSpectrum** with functions **getMSLevel()**,**setMSLevel()**,**getRT()**,**setRT()**,**get_peaks()**,**size()** and **set_peaks()**
 4. **FeatureMap** with function **getFeature()** to access specific feature by index. As FeatureMap is one of the many classes which support iteration, this function was made taking the fact into account.
-5. **Feature** with **getUniqueId() and getMZ()**.
+5. **Feature** with **getUniqueId() and getMZ()**
 
 
 Apart from the wrapper functions, setter and getter methods (```set_py_obj() & get_py_obj()```) are also present in some classes to handle the underlying python object. 
