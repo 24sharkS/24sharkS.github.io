@@ -1,5 +1,7 @@
 ---
-published: false
+layout: post
+title: A Minimal Package
+published: true
 ---
 ## Testing automated conversion in reticulate and wrapper classes using R6Class. 
 
