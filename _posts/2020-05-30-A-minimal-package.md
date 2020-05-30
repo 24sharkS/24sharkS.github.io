@@ -139,7 +139,7 @@ ggplot(peaks_df, aes(x=MZ, y=RT) )+geom_point(size=1, aes(colour = Intensity), a
 ```
 
 ## Limitations to discuss.
-- The user can still access the underlying pyopenms object. So, there is not a full abstraction. To see if the handling of this object should be allowed or not.
+- The user can still access the underlying pyopenms object. So, there is not full abstraction. To see if the handling of this object should be allowed or not.
 - This approach of creating wrapper R6 classes may not be very easy to automate and lead to memory intensive package.
 - Although using automated conversion may eliminate explicit type conversion to a good extent, it is required when objects passed as arguments get modified.
 - Many classes in pyopenms support iteration. Creating a wrapper method to iterate on the pyopenms object might be a possible solution.
