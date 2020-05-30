@@ -22,6 +22,8 @@ Currently the included classes are:
 
 Apart from the wrapper functions, setter and getter methods (```set_py_obj() & get_py_obj()```) are also present in some classes to handle the underlying python object. 
 For example, consider the **getSpectra()** and **setSpectra()** functions of class **MSExperiment**.
+![set_py_obj.JPG]({{site.baseurl}}/_posts/set_py_obj.JPG)
+Using getSpectra() of python object, we get a list of MSSpectrum python objects. For each python object we create an MSSpectrum object and update its wrapped object using MSSpectrum
 
 
 This is one of the drawbacks as it weakens the abstraction.
