@@ -54,7 +54,7 @@ We don't need to convert the values returned from a function. But, we need to pe
 
 Here, if **protein_ids** and **peptide_ids** lists are passed directly, then the problem is that reticulate first converts these to python lists and then passes these new objects to the function. Thus, only the converted python lists will get modified. We need to save the reference to the converted python list, in order to reflect back the changes in the R list.
 
-For setting or extracting peaks, we don't need to do explicit conversion. The python tuple of two numpy arrays get converted to an R list with two arrays and vice versa.
+For setting or extracting peaks, we don't need to do explicit conversion. The python tuple of two numpy arrays gets converted to an R list with two arrays and vice versa.
 
 ![peaks.JPG]({{site.baseurl}}/images/peaks.JPG)
 
@@ -110,7 +110,8 @@ spectra <- msexp$getSpectra()
 
 head(spectra, 2)
 ```
-![mzML.JPG]({{site.baseurl}}/_posts/mzML.JPG)
+
+![mzML.JPG]({{site.baseurl}}/images/mzML.JPG)
 
 ### Accessing peaks for a spectrum.
 ```
