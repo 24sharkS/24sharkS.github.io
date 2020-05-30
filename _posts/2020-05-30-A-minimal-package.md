@@ -11,27 +11,30 @@ The motivation for adopting this approach was for abstraction of type conversion
 
 A limited number of pyopenms classes, with selective functions, have been wrapped to demonstrate a few common use cases like file input/output, getting spectra list of an experiment and setting or extracting the peaks (m/z and Intensity values) for a spectrum.
 
-### The package is hosted [https://github.com/24sharkS/ropenms](here).
+### The package is hosted [here](https://github.com/24sharkS/ropenms).
 
 ## Note on Installation
-Reticulate will automatically configure a python environment for the user when this package is loaded.
-If the user has no compatible version of python, they will be prompted to install Miniconda. The python dependency(pyopenms in this case) listed in Config/reticulate will be installed in an appropriate conda environment. The user can explicity instruct reticulate to use specific python environment having pyopenms installed by setting RETICULATE_PYTHON environment variable to a python binary, i.e. using ```Sys.setenv(RETICULATE_PYTHON = PATH)```.
+Reticulate will automatically configure a python environment for the user when this package is loaded. If the user has no compatible version of python, they will be prompted to install Miniconda. The python dependency(pyopenms in this case) listed in Config/reticulate will be installed in an appropriate conda environment. The user can explicity instruct reticulate to use specific python environment having pyopenms installed by setting RETICULATE_PYTHON environment variable to a python binary, i.e. using ```Sys.setenv(RETICULATE_PYTHON = PATH)```.
 
 ### Class Structure
 ![]({{ site.baseurl }}/images/class_structure.JPG)
 
 The private section contains  **py_obj** which has its value set at the time of object creation in **initialize**. ```get_python_obj()``` is a function which returns the pyopenms module object, which is used to set **py_obj** as the underlying pyopenms class object. All functions use **py_obj** to call the python object.
 
-Currently the included classes are:
+### Currently the included classes are:
 1. **MzMLFile**,**FeatureXMLFile**,**IdXMLFile** which have **load() and store()** functions.
-2. **MSExperiment** with functions **getMSLevels(),getNrSpectra(),getSpectra(),getSpectrum(),setSpectra() and size()**.
-3. **MSSpectrum** with functions **getMSLevel(),setMSLevel(),getRT(),setRT(),get_peaks(),size() and set_peaks()**.
+2. **MSExperiment** with functions **getMSLevels()**,**getNrSpectra()**,**getSpectra()**,**getSpectrum()**,**setSpectra()** and **size()**.
+3. **MSSpectrum** with functions **getMSLevel()**,**setMSLevel()**,**getRT()**,**setRT()**,**get_peaks()**,**size()** and **set_peaks()**.
 4. **FeatureMap** with function **getFeature()** to access specific feature by index. As FeatureMap is one of the many classes which support iteration, this function was made taking the fact into account.
 5. **Feature** with **getUniqueId() and getMZ()**.
 
+
 Apart from the wrapper functions, setter and getter methods (```set_py_obj() & get_py_obj()```) are also present in some classes to handle the underlying python object. 
-For example, consider the **getSpectra()** and **setSpectra()** functions of class **MSExperiment**.
+
+**_For example, consider the getSpectra() and setSpectra() functions of class MSExperiment_**
+
 ![set_py_obj.JPG]({{site.baseurl}}/images/set_py_obj.JPG)
+
 Using **getSpectra()** of python object, we get a list of MSSpectrum python objects. Then for each python object, we create an MSSpectrum object and update its underlying python class object using **set_py_obj**.
 
 ![get_py_obj.JPG]({{ site.baseurl }}/images/get_py_obj.JPG)
@@ -43,7 +46,8 @@ This is one of the drawbacks as it weakens the abstraction because the user can 
 ## Type Conversion.
 Reticulate converts the R data types into equivalent python types when passed to a function. Similarly, when values are returned from Python to R they are converted back to R types.
 
-We don't need to convert the values returned from a function. But, we need to perform explicit to and fro conversion in case where the passed argument is modified. For example, consider the implementation of function ```load()``` of IdXMLFile.
+We don't need to convert the values returned from a function. But, we need to perform explicit to and fro conversion in case where the passed argument is modified. 
+**_For example, consider the implementation of function ```load()``` of IdXMLFile._**
 
 ![load.JPG]({{site.baseurl}}/images/load.JPG)
 
@@ -56,9 +60,10 @@ For setting or extracting peaks, we don't need to do explicit conversion. The py
 Here, using the wrapped python object we call the respective functions passing the arguments directly.
 
 For functions using integer parameter, we need to explicitly coerce the argument to integer as otherwise reticulate will convert it as float since by default, the internal type of any integral value in R is double unless specified by "L".
+
 ![coercion.JPG]({{site.baseurl}}/images/coercion.JPG)
 
-## Some code snippets used to test functionality. (based on [ropenms Script](https://github.com/OpenMS/OpenMS/blob/develop/share/OpenMS/SCRIPTS/ropenms.R))
+## Some code snippets used to test functionality (based on [ropenms Script](https://github.com/OpenMS/OpenMS/blob/develop/share/OpenMS/SCRIPTS/ropenms.R))
 
 ### load and parse idXML file.
 ```
